@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameBinding
 import com.example.composition.domain.entity.GameResult
-import com.example.composition.domain.entity.GameSettings
 import com.example.composition.domain.entity.Level
 
 class GameFragment : Fragment() {
+
     private lateinit var level: Level
 
     private var _binding: FragmentGameBinding? = null
