@@ -7,12 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
 import com.example.composition.domain.entity.GameResult
 
 class GameFinishedFragment : Fragment() {
 
     private lateinit var gameResult: GameResult
+    private val viewModel: GameFinishedViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
+        )[GameFinishedViewModel::class.java]
+    }
 
     private var _binding: FragmentGameFinishedBinding? = null
     private val binding: FragmentGameFinishedBinding
@@ -43,6 +51,34 @@ class GameFinishedFragment : Fragment() {
                     launchRetryGame()
                 }
             })
+        showGameResult()
+    }
+
+    private fun showGameResult() {
+        if (gameResult.winner) {
+            binding.emojiResult.setImageResource(R.drawable.ic_smile)
+        } else {
+            binding.emojiResult.setImageResource(R.drawable.ic_sad)
+        }
+        binding.tvRequiredAnswers.text = String.format(
+            getString(R.string.required_score),
+            gameResult.gameSettings.minCountOfRightAnswers.toString()
+        )
+        binding.tvScoreAnswers.text = String.format(
+            getString(R.string.score_answers),
+            gameResult.countOfRightAnswers
+        )
+        binding.tvRequiredPercentage.text = String.format(
+            getString(R.string.required_percentage),
+            gameResult.gameSettings.minPercentOfRightAnswers
+        )
+        viewModel.percentOfRightAnswers.observe(viewLifecycleOwner) {
+            binding.tvScorePercentage.text = String.format(
+                getString(R.string.score_percentage),
+                it.toString()
+            )
+        }
+        viewModel.countPercents(gameResult.countOfQuestions, gameResult.countOfRightAnswers)
     }
 
     private fun parseParams() {
