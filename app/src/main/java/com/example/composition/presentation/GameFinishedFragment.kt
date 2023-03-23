@@ -50,29 +50,9 @@ class GameFinishedFragment : Fragment() {
     }
 
     private fun showGameResult() {
-        if (args.gameResult.winner) {
-            binding.emojiResult.setImageResource(R.drawable.ic_smile)
-        } else {
-            binding.emojiResult.setImageResource(R.drawable.ic_sad)
-        }
-        binding.tvRequiredAnswers.text = String.format(
-            getString(R.string.required_score),
-            args.gameResult.gameSettings.minCountOfRightAnswers.toString()
-        )
-        binding.tvScoreAnswers.text = String.format(
-            getString(R.string.score_answers),
-            args.gameResult.countOfRightAnswers
-        )
-        binding.tvRequiredPercentage.text = String.format(
-            getString(R.string.required_percentage),
-            args.gameResult.gameSettings.minPercentOfRightAnswers
-        )
-        viewModel.percentOfRightAnswers.observe(viewLifecycleOwner) {
-            binding.tvScorePercentage.text = String.format(
-                getString(R.string.score_percentage),
-                it.toString()
-            )
-        }
+        binding.gameResult = args.gameResult
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
         viewModel.countPercents(args.gameResult.countOfQuestions, args.gameResult.countOfRightAnswers)
     }
 
